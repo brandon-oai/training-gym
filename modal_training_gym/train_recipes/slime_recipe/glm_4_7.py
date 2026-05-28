@@ -26,7 +26,7 @@ class GLM_4_7_Recipe(SlimeRecipe):
     n_samples_per_prompt: int = 8
     global_batch_size: int = 128
     lr: float = 1e-6
-    max_tokens_per_gpu: int = 8192
+    max_tokens_per_gpu: int = 4096
 
     # MoE parallelism
     pipeline_model_parallel_size: int = 4
