@@ -12,6 +12,7 @@ _EXPORTS = {
     "EvalRowResult": ("modal_training_gym.common.eval", "EvalRowResult"),
     "extract_code": ("modal_training_gym.common.eval", "extract_code"),
     "HarborEval": ("modal_training_gym.common.eval", "HarborEval"),
+    "GLM_4_7": ("modal_training_gym.common.models", "GLM_4_7"),
     "HFModelConfiguration": (
         "modal_training_gym.common.models",
         "HFModelConfiguration",
@@ -55,6 +56,7 @@ _EXPORTS = {
 
 __all__ = [
     "DatasetConfig",
+    "GLM_4_7",
     "HarborDataset",
     "DeploymentConfig",
     "EvalConfig",
@@ -81,7 +83,6 @@ __all__ = [
     "Qwen3_14B",
     "Qwen3_30B",
     "Qwen3_32B",
-    "Qwen3_6_35B",
     "score_in_sandbox",
     "SlimeRecipe",
     "setup",

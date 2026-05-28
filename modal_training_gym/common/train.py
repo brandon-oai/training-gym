@@ -20,8 +20,8 @@ def _merge_recipe(base: SlimeRecipe, overrides: SlimeRecipe) -> SlimeRecipe:
         if f.name not in base_fields:
             continue
         user_val = getattr(overrides, f.name)
-        default_val = getattr(base, f.name)
-        if user_val != default_val:
+        default_val = getattr(base, f.name, None)
+        if default_val is None or user_val != default_val:
             base_fields[f.name] = user_val
     return type(base)(**base_fields)
 
