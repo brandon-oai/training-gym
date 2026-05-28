@@ -59,7 +59,16 @@ class GLM_4_7(HFModelConfiguration):
         use_rotary_position_embeddings=True,
         rotary_base=1000000,
         num_experts=160,
+        moe_ffn_hidden_size=1536,
+        moe_shared_expert_intermediate_size=1536,
+        moe_grouped_gemm=True,
+        moe_shared_expert_gate=True,
         moe_router_topk=8,
+        moe_router_score_function="softmax",
+        moe_token_drop_policy="probs",
+        moe_router_dtype="fp32",
+        moe_permute_fusion=True,
+        moe_aux_loss_coeff=0,
     )
 
     def download(self) -> None:
