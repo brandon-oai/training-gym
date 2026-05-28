@@ -1,6 +1,34 @@
 """GLM-4.7 (355B-A32B MoE) model spec as a concrete HFModelConfiguration subclass."""
 
+import subprocess
+
 from .base import HFModelConfiguration, ModelArchitecture
+
+_TOOLS_PATH = "/opt/training-gym/tools"
+
+
+def _disable_mtp_in_config(snapshot_dir: str) -> None:
+    """Zero out ``num_nextn_predict_layers`` in config.json.
+
+    The Slime model provider reads this field via the megatron-bridge
+    ``AutoBridge.from_hf_pretrained`` path but does NOT override it from
+    CLI args (only parallelism settings are overridden).  With PP > 1 the
+    MTP embedding on the last pipeline stage collides with the main
+    embedding on the first stage during ``broadcast_from_pp_rank``.
+    Setting the field to 0 prevents the bridge from creating MTP layers.
+    """
+    import json
+    import os
+
+    cfg_path = os.path.join(snapshot_dir, "config.json")
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    if cfg.get("num_nextn_predict_layers", 0) == 0:
+        return
+    cfg["num_nextn_predict_layers"] = 0
+    with open(cfg_path, "w") as f:
+        json.dump(cfg, f, indent=2)
+    print("[glm_4_7] Patched config.json: num_nextn_predict_layers → 0")
 
 
 class GLM_4_7(HFModelConfiguration):
@@ -30,4 +58,20 @@ class GLM_4_7(HFModelConfiguration):
         untie_embeddings_and_output_weights=True,
         use_rotary_position_embeddings=True,
         rotary_base=1000000,
+        num_experts=160,
+        moe_router_topk=8,
     )
+
+    def download(self) -> None:
+        from huggingface_hub import snapshot_download
+
+        snapshot_dir = snapshot_download(repo_id=self.model_name)
+        subprocess.check_call(
+            [
+                "python3",
+                f"{_TOOLS_PATH}/ensure_glm_tokenizer.py",
+                "--snapshot-dir",
+                snapshot_dir,
+            ],
+        )
+        _disable_mtp_in_config(snapshot_dir)

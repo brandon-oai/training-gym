@@ -26,7 +26,7 @@ class GLM_4_7_Recipe(SlimeRecipe):
     n_samples_per_prompt: int = 8
     global_batch_size: int = 128
     lr: float = 1e-6
-    max_tokens_per_gpu: int = 16384
+    max_tokens_per_gpu: int = 8192
 
     # MoE parallelism
     pipeline_model_parallel_size: int = 4
@@ -55,10 +55,14 @@ class GLM_4_7_Recipe(SlimeRecipe):
     sglang_ep_size: int = 32
     sglang_enable_dp_lm_head: bool = True
     sglang_moe_dense_tp_size: int = 1
-    sglang_speculative_algorithm: str = "EAGLE"
-    sglang_speculative_num_steps: int = 3
-    sglang_speculative_eagle_topk: int = 1
-    sglang_speculative_num_draft_tokens: int = 4
+    # EAGLE speculative decoding disabled: it requires
+    # num_nextn_predict_layers=1 in the HF config, but that field also causes
+    # the megatron-bridge to create MTP layers whose duplicate embedding
+    # collides across PP ranks during update_weights().
+    sglang_speculative_algorithm: str | None = None
+    sglang_speculative_num_steps: int | None = None
+    sglang_speculative_eagle_topk: int | None = None
+    sglang_speculative_num_draft_tokens: int | None = None
 
     # Data
     num_steps_per_rollout: int = 4
