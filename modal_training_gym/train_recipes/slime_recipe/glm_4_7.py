@@ -10,6 +10,7 @@ class GLM_4_7_Recipe(SlimeRecipe):
 
     gpu_type: str = "H200"
     colocate: bool = False
+    rollout_num_gpus: int = 64
     tensor_model_parallel_size: int = 8
     sequence_parallel: bool = True
     rollout_num_gpus_per_engine: int = 32
