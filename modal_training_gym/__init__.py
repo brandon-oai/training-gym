@@ -83,6 +83,7 @@ __all__ = [
     "Qwen3_14B",
     "Qwen3_30B",
     "Qwen3_32B",
+    "Qwen3_6_35B",
     "score_in_sandbox",
     "SlimeRecipe",
     "setup",
