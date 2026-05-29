@@ -6,10 +6,10 @@ from modal_training_gym.train_recipes.slime_recipe.recipe import SlimeRecipe
 
 @dataclass(config=ConfigDict(extra="forbid", arbitrary_types_allowed=True))
 class GLM_4_7_Recipe(SlimeRecipe):
-    """GLM-4.7 (355B-A32B MoE) on 8x8xH200, colocated GSPO."""
+    """GLM-4.7 (355B-A32B MoE) on 8x8xH200, non-colocated GSPO."""
 
     gpu_type: str = "H200"
-    colocate: bool = True
+    colocate: bool = False
     tensor_model_parallel_size: int = 8
     sequence_parallel: bool = True
     rollout_num_gpus_per_engine: int = 32
@@ -26,7 +26,7 @@ class GLM_4_7_Recipe(SlimeRecipe):
     n_samples_per_prompt: int = 8
     global_batch_size: int = 128
     lr: float = 1e-6
-    max_tokens_per_gpu: int = 4096
+    max_tokens_per_gpu: int = 16384
 
     # MoE parallelism
     pipeline_model_parallel_size: int = 4
